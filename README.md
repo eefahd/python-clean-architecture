@@ -128,7 +128,7 @@ Switch between database implementations using environment variables:
 ## 📘 Technical Terminology
 
 Different sources may use varying terms for similar architectural concepts.
-Here’s how they map in this project:
+Here's how they map in this project:
 
 | Term             | Also Known As                | Description                    |
 | ---------------- | ---------------------------- | ------------------------------ |
@@ -137,7 +137,15 @@ Here’s how they map in this project:
 | **Presentation** | Controllers, Adapters, UI    | User-facing entry points       |
 | **Models**       | Entities, Domain Models, DTO | Data structures and validation |
 
-> There’s no single “correct” terminology, adapt these concepts to your project’s needs.
+> There's no single “correct” terminology, adapt these concepts to your project's needs.
+
+---
+
+## 📚 Learn More
+
+For a detailed explanation of the layered architecture pattern and the design decisions behind this example, see:
+
+👉 **[Medium Article: How Layered Architecture Just Makes Sense. A Natural Way to Understand It](https://medium.com/@fahd.hus/how-layered-architecture-just-makes-sense-a-natural-way-to-understand-it-d85dce8ce914)**
 
 ---
 
