@@ -1,0 +1,6 @@
+fastapi==0.120.0
+uvicorn==0.38.0
+pydantic==1.10.18
+pydantic[email]==1.10.18
+pymongo==4.3.3
+typer[all]==0.20.0

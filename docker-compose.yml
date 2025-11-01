@@ -1,0 +1,103 @@
+services:
+  # FastAPI Web Service (MongoDB)
+  api:
+    build: .
+    container_name: contact-manager-api
+    command: uvicorn presentation.fastapi.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_TYPE=mongodb
+      - MONGO_URI=${MONGO_URI:-mongodb://mongodb:27017/}
+      - DB_NAME=${DB_NAME:-contact_manager_db}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - contact-network
+    restart: unless-stopped
+
+  # CLI Service (MongoDB) - Runs indefinitely for interactive use
+  cli:
+    build: .
+    container_name: contact-manager-cli
+    command: sleep infinity
+    volumes:
+      - .:/app
+    environment:
+      - DB_TYPE=mongodb
+      - MONGO_URI=${MONGO_URI:-mongodb://mongodb:27017/}
+      - DB_NAME=${DB_NAME:-contact_manager_db}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - contact-network
+    profiles:
+      - cli
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: contact-manager-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=${DB_NAME:-contact_manager_db}
+    networks:
+      - contact-network
+    restart: unless-stopped
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # SQLite-based API
+  api-sqlite:
+    build: .
+    container_name: contact-manager-api-sqlite
+    command: uvicorn presentation.fastapi.main:app --host 0.0.0.0 --port 8001 --reload
+    volumes:
+      - .:/app
+      - sqlite_data:/app/data
+    ports:
+      - "8001:8001"
+    environment:
+      - DB_TYPE=sqlite
+      - DB_PATH=/app/data/app.db
+    networks:
+      - contact-network
+    restart: unless-stopped
+    profiles:
+      - sqlite
+
+  # SQLite-based CLI
+  cli-sqlite:
+    build: .
+    container_name: contact-manager-cli-sqlite
+    command: sleep infinity
+    volumes:
+      - .:/app
+      - sqlite_data:/app/data
+    environment:
+      - DB_TYPE=sqlite
+      - DB_PATH=/app/data/app.db
+    networks:
+      - contact-network
+    profiles:
+      - sqlite-cli
+
+volumes:
+  mongodb_data:
+    driver: local
+  sqlite_data:
+    driver: local
+
+networks:
+  contact-network:
+    driver: bridge
