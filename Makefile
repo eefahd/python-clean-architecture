@@ -1,3 +1,4 @@
+# ⚠️ Auto-generated file. Review before use. It may contain suboptimal content.
 COMPOSE = docker-compose
 OPEN_CMD = open
 ifeq ($(shell uname), Linux)
